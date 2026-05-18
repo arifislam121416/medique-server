@@ -9,7 +9,7 @@ const port = process.env.PORT || 8080
 // #medique-server
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://medique-server:3IGaY6nJbfthne9K@cluster0.m08btp0.mongodb.net/?appName=Cluster0";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -39,6 +39,13 @@ async function run() {
 app.get("/tutorals", async (req, res) =>{
     const cursor = tutorialCollection.find();
     const result = await cursor.toArray();
+    res.send(result)
+})
+
+app.get("/tutorals/:id", async (req, res) =>{
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)};
+    const result = await tutorialCollection.findOne(query);
     res.send(result)
 })
 
