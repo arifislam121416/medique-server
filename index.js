@@ -82,6 +82,7 @@ async function run() {
       res.send(result);
     });
 
+    
     app.get("/tutorals/:id",
      loggerMiddleware,
        async (req, res) => {
@@ -102,6 +103,8 @@ async function run() {
   });
 }
     });
+
+
 app.patch("/enroll/:id", tokenVerificationMiddleware, async (req, res) =>{
   const {id} = req.params;
   const enrollData = req.body;
@@ -126,6 +129,8 @@ const result = await enrollmentCollection.insertOne({
 });
 res.send(result);
 })
+
+
     app.get("/availabletutorials", async (req, res) => {
       const result = await tutorialCollection
         .find()
@@ -134,6 +139,7 @@ res.send(result);
 
       res.send(result);
     });
+
 
     app.post("/addtutorals", async (req, res) => {
       const tutorialData = req.body;
@@ -151,6 +157,7 @@ res.send(result);
       res.send(result);
     });
 
+
 app.get("/mybookings",
   tokenVerificationMiddleware,
   async (req, res) => {
@@ -164,15 +171,14 @@ app.get("/mybookings",
       });
     }
 
+
     const result = await bookingCollection
       .find({ userEmail: email })
       .toArray();
 
     res.json(result);
 });
-
     await client.db("admin").command({ ping: 1 });
-
     console.log("MongoDB connected");
   } catch (error) {
     console.log(error);
