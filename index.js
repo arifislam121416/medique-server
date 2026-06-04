@@ -12,11 +12,6 @@ app.use(express.json());
 const port = process.env.PORT || 8080;
 
 const uri = process.env.MONGODB_URI;
-
-// const JWKS = createRemoteJWKSet(
-//       new URL(`${process.env.CLIENT_URL}/api/auth/jwks`)
-//     );
-
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -31,7 +26,7 @@ next();
     };
 
     const tokenVerificationMiddleware = async (req, res, next) => {
-      // console.log("Verifying token",req.headers);
+
       const { authorization} = req.headers;
       const token = authorization?.split(" ")[1];
       
@@ -63,8 +58,6 @@ next();
           message: "Unauthorized",
         })
   }
-      
-    
     };
 
 async function run() {
@@ -72,14 +65,11 @@ async function run() {
 
   try {
     await client.connect();
-
     const db = client.db("medique-server");
-
     const tutorialCollection = db.collection("tutorals");
     const bookingCollection = db.collection("bookings");
     const enrollmentCollection = db.collection("enrollments");
 
-    
     app.get("/tutorals", async (req, res) => {
       const {search} = req.query;
       let cursor;
@@ -91,7 +81,6 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
-
 
     app.get("/tutorals/:id",
      loggerMiddleware,
@@ -113,7 +102,6 @@ async function run() {
   });
 }
     });
-
 app.patch("/enroll/:id", tokenVerificationMiddleware, async (req, res) =>{
   const {id} = req.params;
   const enrollData = req.body;
@@ -124,7 +112,6 @@ app.patch("/enroll/:id", tokenVerificationMiddleware, async (req, res) =>{
     message: "Tutorial not found",
   });
 }
-
 await tutorialCollection.updateOne(
   {_id: new ObjectId(id)},
   {
@@ -132,16 +119,13 @@ await tutorialCollection.updateOne(
     $set: { lastEnrolledAt: new Date() },
   }
 );
-
 const result = await enrollmentCollection.insertOne({
   ...enrollData,
   tutorialId: id,
   enrolledAt: new Date(),
 });
-
 res.send(result);
 })
-
     app.get("/availabletutorials", async (req, res) => {
       const result = await tutorialCollection
         .find()
@@ -151,7 +135,6 @@ res.send(result);
       res.send(result);
     });
 
-   
     app.post("/addtutorals", async (req, res) => {
       const tutorialData = req.body;
 
@@ -161,7 +144,6 @@ res.send(result);
           message: "Tutor name is required",
         });
       }
-
       const result = await tutorialCollection.insertOne(
         tutorialData
       );
@@ -169,7 +151,6 @@ res.send(result);
       res.send(result);
     });
 
-  
 app.get("/mybookings",
   tokenVerificationMiddleware,
   async (req, res) => {
