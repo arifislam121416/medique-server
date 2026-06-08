@@ -64,7 +64,7 @@ async function run() {
 
 
   try {
-    await client.connect();
+  
     const db = client.db("medique-server");
     const tutorialCollection = db.collection("tutorals");
     const bookingCollection = db.collection("bookings");
@@ -178,7 +178,7 @@ app.get("/mybookings",
 
     res.json(result);
 });
-    await client.db("admin").command({ ping: 1 });
+   
     console.log("MongoDB connected");
   } catch (error) {
     console.log(error);
